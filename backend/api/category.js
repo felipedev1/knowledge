@@ -28,7 +28,7 @@ module.exports = app => {
 
   const remove = async (req, res) => {
     try {
-      existsOrError(req.params.id, 'Código da categoria não informada')
+      existsOrError(req.params.id, 'Código da categoria não informado')
 
       const subcategory = await app.db('categories') 
         .where({parentId: req.params.id})
@@ -89,5 +89,22 @@ module.exports = app => {
       .catch(err => res.status(500).send(err))
   }
 
-  return { save, remove, get, getById }
+  const toTree = (categories, tree) => {
+    if(!tree) tree = categories.filter(category => !category.parentId)
+
+    tree = tree.map(parentNode => {
+      const isChild = node => node.parentId === parentNode.id
+      parentNode.children = toTree(categories, categories.filter(isChild))
+      return parentNode
+    })
+    return tree
+  }
+
+  const getTree = (req, res) => {
+    app.db('categories')
+      .then(categories => res.json(toTree(categories)))
+      .catch(err => res.status(500).send(err))
+  }
+
+  return { save, remove, get, getById, getTree }
 }
