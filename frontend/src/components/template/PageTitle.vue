@@ -18,6 +18,10 @@ export default {
     margin: 0;
   }
 
+  .page-title h1 > i {
+    margin-right: 5px;
+  }
+
   .page-title h2 {
     color: #777;
     margin-top: 5px;
