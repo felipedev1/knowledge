@@ -34,6 +34,7 @@ module.exports = app => {
       token: jwt.encode(payload, authSecret)
     })
   }
+
   const validateToken = async (req, res) => {
     const userData = req.body
     try {
@@ -48,5 +49,24 @@ module.exports = app => {
     }
     res.send(false)
   }
-  return { signin, validateToken }
+
+  const validateAdmin = async (req, res) => {
+    const userData = req.body
+    try {
+      if(userData) {
+        const token = jwt.decode(userData.token, authSecret)
+        const user = await app.db('users')
+          .where({id: token.id})
+          .first()
+        if(user.admin) {
+          return res.send(true)
+        }
+      }
+    } catch (err) {
+      //problema no token
+    }
+    res.send(false)
+  }
+
+  return { signin, validateToken, validateAdmin }
 }
