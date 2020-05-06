@@ -28,7 +28,7 @@ export default new Vuex.Store({
         axios.defaults.headers.common['Authorization'] = `bearer ${user.token}`
         state.isMenuVisible = true
       } else {
-        delete axios.defaults.headers.commom['Authorization']
+        delete axios.defaults.headers.common['Authorization']
         state.isMenuVisible = false
       }
     }
